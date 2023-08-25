@@ -27,7 +27,7 @@ Contributions are welcome! If you'd like to improve the encryption algorithm, en
 
 ## License
 
-This project is licensed under the GNU GENERAL PUBLIC LICENSE License.
+This project is licensed under the MIT License.
 
 ## Disclaimer
 
