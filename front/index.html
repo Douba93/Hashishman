@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashishman API</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1>Hashishman API</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Encrypt Password</h2>
+                <div class="form-group">
+                    <label for="encrypt-password">Password:</label>
+                    <input type="password" class="form-control" id="encrypt-password">
+                </div>
+                <button id="encrypt-button" class="btn btn-primary">Encrypt</button>
+                <div class="mt-3" id="encrypted-result"></div>
+                <div class="mt-3" id="secretkey-result"></div>
+            </div>
+            <div class="col-md-6">
+                <h2>Decrypt Password</h2>
+                <div class="form-group">
+                    <label for="decrypt-password">Encrypted Password:</label>
+                    <input type="text" class="form-control" id="decrypt-password">
+                </div>
+                <div class="form-group">
+                    <label for="secret-key">Secret Key:</label>
+                    <input type="text" class="form-control" id="secret-key">
+                </div>
+                <button id="decrypt-button" class="btn btn-primary">Decrypt</button>
+                <div class="mt-3" id="decrypted-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById("encrypt-button").addEventListener("click", function (event) {
+            event.preventDefault();  // Empêche le rechargement de la page
+
+            const password = document.getElementById("encrypt-password").value;
+            fetch("http://localhost:5000/encrypt_password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "password": password })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const encryptedPassword = data.encrypted_password;
+                    const secret_key = data.secret_key
+                    document.getElementById("encrypted-result").textContent = `Encrypted Password: ${encryptedPassword}`;
+                    document.getElementById("secretkey-result").textContent = `Secret Key: ${secret_key}`;
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        });
+
+        document.getElementById("decrypt-button").addEventListener("click", function (event) {
+            event.preventDefault();  // Empêche le rechargement de la page
+
+            const encryptedPassword = document.getElementById("decrypt-password").value;
+            const secretKey = document.getElementById("secret-key").value;
+            fetch("http://localhost:5000/decrypt_password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "encrypted_password": encryptedPassword,
+                    "secret_key": secretKey
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const decryptedPassword = data.decrypted_password;
+                    document.getElementById("decrypted-result").textContent = `Decrypted Password: ${decryptedPassword}`;
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        });
+    </script>
+</body>
+
+</html>
